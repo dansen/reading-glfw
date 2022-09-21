@@ -43,6 +43,9 @@
 
 #include <linmath.h>
 
+#include <string>
+#include <iostream>
+#include <sstream>
 
 /*****************************************************************************
  * Various declarations and macros
@@ -280,12 +283,12 @@ void mouse_button_callback( GLFWwindow* window, int button, int action, int mods
 
    if (action == GLFW_PRESS)
    {
-      override_pos = GLFW_TRUE;
-      set_ball_pos(cursor_x, cursor_y);
+      //override_pos = GLFW_TRUE;
+      //set_ball_pos(cursor_x, cursor_y);
    }
    else
    {
-      override_pos = GLFW_FALSE;
+      //override_pos = GLFW_FALSE;
    }
 }
 
@@ -616,6 +619,29 @@ void DrawGrid( void )
    return;
 }
 
+static double lastTime;
+int nbFrames = 0;
+
+void showFPS(GLFWwindow* pWindow)
+{
+    // Measure speed
+    double currentTime = glfwGetTime();
+    double delta = currentTime - lastTime;
+    nbFrames++;
+    if (delta >= 1.0) { // If last cout was more than 1 sec ago
+        std::cout << 1000.0 / double(nbFrames) << std::endl;
+
+        double fps = double(nbFrames) / delta;
+
+        std::stringstream ss;
+        ss << "boing" << " " << "1.0.0" << " [" << fps << " FPS]";
+
+        glfwSetWindowTitle(pWindow, ss.str().c_str());
+
+        nbFrames = 0;
+        lastTime = currentTime;
+    }
+}
 
 /*======================================================================*
  * main()
@@ -623,13 +649,14 @@ void DrawGrid( void )
 
 int main( void )
 {
+    lastTime = glfwGetTime();
    GLFWwindow* window;
 
    /* Init GLFW */
    if( !glfwInit() )
       exit( EXIT_FAILURE );
 
-   window = glfwCreateWindow( 400, 400, "Boing (classic Amiga demo)", NULL, NULL );
+   window = glfwCreateWindow( 1024, 768, "Boing (classic Amiga demo)", NULL, NULL );
    if (!window)
    {
        glfwTerminate();
@@ -645,7 +672,8 @@ int main( void )
 
    glfwMakeContextCurrent(window);
    gladLoadGL(glfwGetProcAddress);
-   glfwSwapInterval( 1 );
+   glfwSwapInterval( 0 );
+   glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
 
    glfwGetFramebufferSize(window, &width, &height);
    reshape(window, width, height);
@@ -664,6 +692,8 @@ int main( void )
 
        /* Draw one frame */
        display();
+
+       showFPS(window);
 
        /* Swap buffers */
        glfwSwapBuffers(window);
