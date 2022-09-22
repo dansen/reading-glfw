@@ -557,7 +557,7 @@ int main(void)
         windowRefreshFun(window);
 
         // Wait for new events
-        glfwWaitEvents();
+        glfwPollEvents();
 
         // Check if the window should be closed
         if (glfwWindowShouldClose(window))
