@@ -43,10 +43,6 @@
 
 #include <linmath.h>
 
-#include <string>
-#include <iostream>
-#include <sstream>
-
 /*****************************************************************************
  * Various declarations and macros
  *****************************************************************************/
@@ -629,14 +625,11 @@ void showFPS(GLFWwindow* pWindow)
     double delta = currentTime - lastTime;
     nbFrames++;
     if (delta >= 1.0) { // If last cout was more than 1 sec ago
-        std::cout << 1000.0 / double(nbFrames) << std::endl;
-
-        double fps = double(nbFrames) / delta;
-
-        std::stringstream ss;
-        ss << "boing" << " " << "1.0.0" << " [" << fps << " FPS]";
-
-        glfwSetWindowTitle(pWindow, ss.str().c_str());
+        double fps = nbFrames / delta;
+        
+        char ss[1024];
+        sprintf(ss, "boing 1.0.0 %.2f FPS", fps);
+        glfwSetWindowTitle(pWindow, ss);
 
         nbFrames = 0;
         lastTime = currentTime;
@@ -656,7 +649,7 @@ int main( void )
    if( !glfwInit() )
       exit( EXIT_FAILURE );
 
-   window = glfwCreateWindow( 1024, 768, "Boing (classic Amiga demo)", NULL, NULL );
+   window = glfwCreateWindow( 600, 400, "Boing (classic Amiga demo)", NULL, NULL );
    if (!window)
    {
        glfwTerminate();
