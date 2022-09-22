@@ -478,6 +478,26 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
+static double lastTime;
+int nbFrames = 0;
+
+void showFPS(GLFWwindow* pWindow)
+{
+    // Measure speed
+    double currentTime = glfwGetTime();
+    double delta = currentTime - lastTime;
+    nbFrames++;
+    if (delta >= 1.0) { // If last cout was more than 1 sec ago
+        double fps = nbFrames / delta;
+
+        char ss[1024];
+        sprintf(ss, "Split View 1.0.0 %.2f FPS", fps);
+        glfwSetWindowTitle(pWindow, ss);
+
+        nbFrames = 0;
+        lastTime = currentTime;
+    }
+}
 
 //========================================================================
 // main
@@ -516,7 +536,9 @@ int main(void)
     // Enable vsync
     glfwMakeContextCurrent(window);
     gladLoadGL(glfwGetProcAddress);
-    glfwSwapInterval(1);
+    
+    glfwSwapInterval(0);
+    glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
 
     if (GLAD_GL_ARB_multisample || GLAD_GL_VERSION_1_3)
         glEnable(GL_MULTISAMPLE_ARB);
@@ -528,8 +550,11 @@ int main(void)
     for (;;)
     {
         // Only redraw if we need to
-        if (do_redraw)
-            windowRefreshFun(window);
+        if (do_redraw) {
+            
+        }
+        showFPS(window);
+        windowRefreshFun(window);
 
         // Wait for new events
         glfwWaitEvents();
